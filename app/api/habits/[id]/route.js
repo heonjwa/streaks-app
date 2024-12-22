@@ -2,9 +2,8 @@ import connectMongoDB from "@/libs/mongodb";
 import Habit from "@/models/habit";
 import { NextResponse } from "next/server";
 
-export async function PUT(request, context) {
+export async function PUT(context) {
   const { id } = await context.params; // Extract the habit ID from the URL
-  const { streak } = await request.json(); // Extract the new streak value from the request body
 
   try {
     await connectMongoDB(); // Ensure database connection
@@ -27,7 +26,7 @@ export async function PUT(request, context) {
 }
 
 
-export async function GET(request, { params }) {
+export async function GET({ params }) {
   const { id } = params;
   await connectMongoDB();
   const habit = await Habit.findOne({ _id: id });
