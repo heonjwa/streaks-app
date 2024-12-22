@@ -1,7 +1,5 @@
-import Link from "next/link";
 import AddHabit from "./AddHabit";
 import Header from "../components/Header";
-
 
 export default function AddHabitPage() {
   return (

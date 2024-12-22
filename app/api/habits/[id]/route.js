@@ -2,7 +2,7 @@ import connectMongoDB from "@/libs/mongodb";
 import Habit from "@/models/habit";
 import { NextResponse } from "next/server";
 
-export async function PUT(context) {
+export async function PUT(request, context) {
   const { id } = await context.params; // Extract the habit ID from the URL
 
   try {
@@ -26,7 +26,7 @@ export async function PUT(context) {
 }
 
 
-export async function GET({ params }) {
+export async function GET(request, { params }) {
   const { id } = params;
   await connectMongoDB();
   const habit = await Habit.findOne({ _id: id });
