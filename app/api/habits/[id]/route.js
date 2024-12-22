@@ -2,13 +2,30 @@ import connectMongoDB from "@/libs/mongodb";
 import Habit from "@/models/habit";
 import { NextResponse } from "next/server";
 
-export async function PUT(request, { params }) {
-  const { id } = params;
-  const { newName: name, newStreak: streak } = await request.json();
-  await connectMongoDB();
-  await Habit.findByIdAndUpdate(id, { name, streak });
-  return NextResponse.json({ message: "Habit updated"}, { status: 200 });
+export async function PUT(request, context) {
+  const { id } = await context.params; // Extract the habit ID from the URL
+  const { streak } = await request.json(); // Extract the new streak value from the request body
+
+  try {
+    await connectMongoDB(); // Ensure database connection
+
+    const updatedHabit = await Habit.findByIdAndUpdate(
+      id,
+      { $inc: { streak: 1 } }, // Increment the streak count by 1
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedHabit) {
+      return NextResponse.json({ error: "Habit not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ habit: updatedHabit }, { status: 200 });
+  } catch (error) {
+    console.error("Error updating habit:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
 }
+
 
 export async function GET(request, { params }) {
   const { id } = params;
