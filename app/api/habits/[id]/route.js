@@ -8,11 +8,17 @@ export async function PUT(request, context) {
   try {
     await connectMongoDB(); // Ensure database connection
 
+    const habit = await Habit.findById(id);
+
+    if (habit.completedToday) return;
+
     const updatedHabit = await Habit.findByIdAndUpdate(
       id,
-      { $inc: { streak: 1 } }, // Increment the streak count by 1
-      { new: true } // Return the updated document
+      { $inc: { streak: 1 }, $set: { completedToday: true } }, // Increment the streak count by 1
+      { new: true }, // Return the updated document
     );
+
+    console.log("UPDATED HABIT: " + updatedHabit)
 
     if (!updatedHabit) {
       return NextResponse.json({ error: "Habit not found" }, { status: 404 });

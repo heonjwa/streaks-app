@@ -5,6 +5,7 @@ import { useState } from "react";
 export default function HabitItem({ habit }) {
   const [streak, setStreak] = useState(habit.streak);
   const [loading, setLoading] = useState(false);
+  const [completed, setCompleted] = useState(habit.completedToday)
 
   const handleMarkComplete = async () => {
     setLoading(true);
@@ -23,6 +24,7 @@ export default function HabitItem({ habit }) {
       }
 
       setStreak(streak + 1);
+      setCompleted(true)
     } catch (error) {
       console.error("Error updating streak:", error);
       alert("Could not update streak. Please try again later.");
@@ -39,15 +41,15 @@ export default function HabitItem({ habit }) {
           Streak: {streak} day{streak !== 1 ? "s" : ""}
         </p>
       </div>
-      <button
-        className={`${
-          loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-        } text-white font-bold py-1 px-3 rounded-md transition`}
-        onClick={handleMarkComplete}
-        disabled={loading}
-      >
-        {loading ? "Updating..." : "Mark Complete"}
-      </button>
+      {!completed &&
+        <button
+          className={`${loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+            } text-white font-bold py-1 px-3 rounded-md transition`}
+          onClick={handleMarkComplete}
+          disabled={loading || completed}
+        >
+          {loading ? "Updating..." : "Mark Complete"}
+        </button>}
     </li>
   );
 }

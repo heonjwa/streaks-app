@@ -4,6 +4,7 @@ const habitSchema = new Schema(
   {
     name: { type: String, required: true },
     streak: { type: Number, default: 0 },
+    completedToday: { type: Boolean, default: false },
   },
   {
     timestamps: true
