@@ -1,7 +1,9 @@
 import { useState } from "react";
+import Button from '@mui/material/Button';
 
 export default function MarkComplete({ streak, setStreak, habit }) {
   const [loading, setLoading] = useState(false);
+  const [completed, setCompleted] = useState(habit.completedToday);
 
   const handleMarkComplete = async () => {
     setLoading(true);
@@ -19,8 +21,12 @@ export default function MarkComplete({ streak, setStreak, habit }) {
         throw new Error("Failed to update habit");
       }
 
+      const response = await res.json()
+      console.log("RESPONSE")
+      console.log(response)
       // Update streak in parent component
       setStreak(streak + 1);
+      setCompleted(response.habit.completedToday)
     } catch (error) {
       console.error("Error updating streak:", error);
       alert("Could not update streak. Please try again later.");
@@ -30,14 +36,12 @@ export default function MarkComplete({ streak, setStreak, habit }) {
   };
 
   return (
-    <button
-      className={`${
-        loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-      } text-white font-bold py-1 px-3 rounded-md transition`}
+    <Button
+      variant="contained"
       onClick={handleMarkComplete}
-      disabled={loading}
+      disabled={loading || completed}
     >
       {loading ? "Updating..." : "Mark Complete"}
-    </button>
+    </Button>
   );
 }
